@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: powerdns-appset
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - list:
+        elements:
+          - cluster: local
+            namespace: powerdns-dev
+  template:
+    metadata:
+      name: '{{.cluster}}-powerdns'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/sealtielus/powerdns-helm-appset-template.git
+        targetRevision: HEAD
+        path: charts/powerdns
+        helm:
+          valueFiles:
+            - values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{.namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

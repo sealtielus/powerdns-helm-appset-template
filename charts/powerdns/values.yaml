@@ -1,0 +1,10 @@
+replicaCount: 1
+
+image:
+  repository: powerdns/pdns-auth
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 53
